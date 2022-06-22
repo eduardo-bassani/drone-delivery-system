@@ -256,6 +256,20 @@ public class ACMEDrones {
         return false;
     }
 
+    public boolean consultarTodasEntregas() {
+        if (entregas.isEmpty()) {
+            System.out.println("Não foi encontrado nenhuma entrega.");
+            return false;
+        } else {
+            String lista = "";
+            for (Entrega e : entregas) {
+                lista += e + "\n";
+            }
+            System.out.print(lista);
+            return true;
+        }
+    }
+
     public boolean consultarEntregas() {
         if (cliente.getEntregas().isEmpty()) {
             System.out.println("Não foi encontrado nenhuma entrega.");

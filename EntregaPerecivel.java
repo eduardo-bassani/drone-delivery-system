@@ -24,6 +24,6 @@ public class EntregaPerecivel extends Entrega {
     public String toString() {
         return "[cliente=" + cliente + ", data=" + data + ", descricao=" + descricao + ", destino=" + destino
                 + ", drone=" + drone + ", numero=" + numero + ", origem=" + origem + ", peso=" + peso + ", situacao="
-                + situacao + ", tempoValidade=" + tempoValidade + "]";
+                + situacao + ", tempoValidade=" + tempoValidade + ", valor=" + calculaValor() + "]";
     }
 }
