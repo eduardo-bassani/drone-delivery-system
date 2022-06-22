@@ -54,4 +54,9 @@ public class Drone {
     public boolean adicionarEntrega(Entrega entrega) {
         return entregas.add(entrega);
     }
+
+    public String toString() {
+        return "[autonomiaKm=" + autonomiaKm + ", base=" + base + ", cargaMaxima=" + cargaMaxima
+                + ", identificador=" + identificador + "]";
+    }
 }

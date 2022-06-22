@@ -42,4 +42,9 @@ public class Localizacao {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
+    public String toString() {
+        return "[codigo=" + codigo + ", latitude=" + latitude + ", logradouro=" + logradouro
+                + ", longitude=" + longitude + "]";
+    }
 }

@@ -54,4 +54,39 @@ public class Cliente {
     public boolean adicionarEntrega(Entrega entrega) {
         return entregas.add(entrega);
     }
+
+    public String consultarEntregas() {
+        if (entregas.isEmpty()) {
+            return null;
+        } else {
+            String lista = "";
+            for (Entrega e : entregas) {
+                lista += e + "\n";
+            }
+            return lista;
+        }
+    }
+
+    public String consultarCobrancaMensal(int ano, int mes) {
+        int cont = 0;
+        String lista = "";
+        double cobrancaMensal = 0.0;
+        for (Entrega e : entregas) {
+            if (e.getData().getYear() == ano && e.getData().getMonthValue() == mes) {
+                lista += e + "\n";
+                cobrancaMensal += e.calculaValor();
+                cont++;
+            }
+        }
+        if (cont == 0) {
+            return null;
+        } else {
+            lista += "Cobrança mensal: R$" + cobrancaMensal;
+            return lista;
+        }
+    }
+
+    public String toString() {
+        return "[email=" + email + ", endereco=" + endereco + ", nome=" + nome + ", senha=" + senha + "]";
+    }
 }

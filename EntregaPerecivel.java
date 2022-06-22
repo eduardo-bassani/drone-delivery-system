@@ -20,4 +20,10 @@ public class EntregaPerecivel extends Entrega {
     public double calculaValor() {
         return (20.0 * peso + 30.0 * distancia()) * 1.1;
     }
+
+    public String toString() {
+        return "[cliente=" + cliente + ", data=" + data + ", descricao=" + descricao + ", destino=" + destino
+                + ", drone=" + drone + ", numero=" + numero + ", origem=" + origem + ", peso=" + peso + ", situacao="
+                + situacao + ", tempoValidade=" + tempoValidade + "]";
+    }
 }
