@@ -325,7 +325,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloAutonomiaInvalido.setVisible(false);
         painelCadastrarDrone.add(rotuloAutonomiaInvalido);
 
-        rotuloBase = new JLabel("Código da localização de sua base");
+        rotuloBase = new JLabel("Código de sua base");
         rotuloBase.setBounds(300, 305, 300, 20);
         painelCadastrarDrone.add(rotuloBase);
 
@@ -456,7 +456,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloNomeInvalido.setVisible(false);
         painelCadastrarCliente.add(rotuloNomeInvalido);
 
-        rotuloEndereco = new JLabel("Endereço");
+        rotuloEndereco = new JLabel("Código de seu endereço");
         rotuloEndereco.setBounds(300, 205, 300, 20);
         painelCadastrarCliente.add(rotuloEndereco);
 
