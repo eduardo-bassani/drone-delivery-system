@@ -61,7 +61,7 @@ public class Cliente {
         } else {
             String lista = "";
             for (Entrega e : entregas) {
-                lista += e + "\n";
+                lista += e + "\n\n";
             }
             return lista;
         }
@@ -73,7 +73,7 @@ public class Cliente {
         double cobrancaMensal = 0.0;
         for (Entrega e : entregas) {
             if (e.getData().getYear() == ano && e.getData().getMonthValue() == mes) {
-                lista += e + "\n";
+                lista += e + "\n\n";
                 cobrancaMensal += e.calculaValor();
                 cont++;
             }
