@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class InterfaceGrafica extends JFrame {
     CardLayout cardLayout;
@@ -23,6 +24,12 @@ public class InterfaceGrafica extends JFrame {
         setSize(new Dimension(800, 600));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                acmeDrones.salvarDados();
+            }
+        });
 
         cardLayout = new CardLayout();
         painelPrincipal = new JPanel();

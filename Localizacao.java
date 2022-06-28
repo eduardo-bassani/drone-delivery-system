@@ -43,6 +43,10 @@ public class Localizacao {
         this.longitude = longitude;
     }
 
+    public String toCsv() {
+        return codigo + ";" + logradouro + ";" + latitude + ";" + longitude;
+    }
+
     public String toString() {
         return "[codigo=" + codigo + ", latitude=" + latitude + ", logradouro=" + logradouro
                 + ", longitude=" + longitude + "]";

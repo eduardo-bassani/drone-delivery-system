@@ -55,6 +55,10 @@ public class Drone {
         return entregas.add(entrega);
     }
 
+    public String toCsv() {
+        return identificador + ";" + cargaMaxima + ";" + autonomiaKm + ";" + base.getCodigo();
+    }
+
     public String toString() {
         return "[autonomiaKm=" + autonomiaKm + ", base=" + base + ", cargaMaxima=" + cargaMaxima
                 + ", identificador=" + identificador + "]";

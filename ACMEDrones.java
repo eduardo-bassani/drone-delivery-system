@@ -1,3 +1,9 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,6 +23,140 @@ public class ACMEDrones {
         entregas = new ArrayList<Entrega>();
         cliente = null;
         administrador = false;
+        carregarLocalizacoes();
+        carregarDrones();
+        carregarClientes();
+        carregarEntregas();
+    }
+
+    public boolean carregarLocalizacoes() {
+        try (BufferedReader br = new BufferedReader(new FileReader("localizacoes.csv"))) {
+            String linha, logradouro;
+            int codigo;
+            double latitude, longitude;
+            while ((linha = br.readLine()) != null) {
+                String[] campos = linha.split(";");
+                if (campos.length == 4) {
+                    codigo = Integer.parseInt(campos[0]);
+                    logradouro = campos[1];
+                    latitude = Double.parseDouble(campos[2]);
+                    longitude = Double.parseDouble(campos[3]);
+                    localizacoes.add(new Localizacao(codigo, logradouro, latitude, longitude));
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean carregarDrones() {
+        try (BufferedReader br = new BufferedReader(new FileReader("drones.csv"))) {
+            String linha;
+            int identificador, codigoBase;
+            double cargaMaxima, autonomiaKm;
+            while ((linha = br.readLine()) != null) {
+                String[] campos = linha.split(";");
+                if (campos.length == 4) {
+                    identificador = Integer.parseInt(campos[0]);
+                    cargaMaxima = Double.parseDouble(campos[1]);
+                    autonomiaKm = Double.parseDouble(campos[2]);
+                    codigoBase = Integer.parseInt(campos[3]);
+                    drones.add(new Drone(identificador, cargaMaxima, autonomiaKm, buscarLocalizacao(codigoBase)));
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean carregarClientes() {
+        try (BufferedReader br = new BufferedReader(new FileReader("clientes.csv"))) {
+            String linha, nome, email, senha;
+            int codigoLocalizacao;
+            while ((linha = br.readLine()) != null) {
+                String[] campos = linha.split(";");
+                if (campos.length == 4) {
+                    nome = campos[0];
+                    email = campos[1];
+                    senha = campos[2];
+                    codigoLocalizacao = Integer.parseInt(campos[3]);
+                    clientes.add(new Cliente(nome, buscarLocalizacao(codigoLocalizacao), email, senha));
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean carregarEntregas() {
+        try (BufferedReader br = new BufferedReader(new FileReader("entregas.csv"))) {
+            String linha, descricao;
+            int tipo, numero;
+            Localizacao origem, destino;
+            LocalDate data, validade;
+            double peso;
+            String descricaoMateriais;
+            Cliente cliente;
+            while ((linha = br.readLine()) != null) {
+                String[] campos = linha.split(";");
+                if (campos.length == 9) {
+                    tipo = Integer.parseInt(campos[0]);
+                    numero = Integer.parseInt(campos[1]);
+                    descricao = campos[2];
+                    DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    data = LocalDate.parse(campos[3], formato);
+                    peso = Double.parseDouble(campos[4]);
+                    cliente = buscarCliente(campos[5]);
+                    origem = buscarLocalizacao(Integer.parseInt(campos[6]));
+                    destino = buscarLocalizacao(Integer.parseInt(campos[7]));
+                    if (tipo == 1) {
+                        validade = LocalDate.parse(campos[8], formato);
+                        entregas.add(new EntregaPerecivel(numero, descricao, data, peso, origem, destino, cliente, validade));
+                    } else if (tipo == 2) {
+                        descricaoMateriais = campos[8];
+                        entregas.add(new EntregaNaoPerecivel(numero, descricao, data, peso, origem, destino, cliente, descricaoMateriais));
+                    }
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean salvarDados() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("localizacoes.csv"))) {
+            for (Localizacao l : localizacoes) {
+                bw.write(l.toCsv() + "\n");
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("drones.csv"))) {
+            for (Drone d : drones) {
+                bw.write(d.toCsv() + "\n");
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("clientes.csv"))) {
+            for (Cliente c : clientes) {
+                bw.write(c.toCsv() + "\n");
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("entregas.csv"))) {
+            for (Entrega e : entregas) {
+                bw.write(e.toCsv() + "\n");
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public boolean isAdmin() {

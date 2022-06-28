@@ -11,9 +11,9 @@ public abstract class Entrega {
     protected Drone drone;
     protected Cliente cliente;
 
-    public Entrega(int numero, LocalDate data, double peso, Localizacao origem, Localizacao destino, Cliente cliente) {
+    public Entrega(int numero, String descricao, LocalDate data, double peso, Localizacao origem, Localizacao destino, Cliente cliente) {
         this.numero = numero;
-        this.descricao = "";
+        this.descricao = descricao;
         this.data = data;
         this.peso = peso;
         this.origem = origem;
@@ -96,6 +96,8 @@ public abstract class Entrega {
     }
 
     public abstract double calculaValor();
+
+    public abstract String toCsv();
 
     public double distancia() {
         double lat1 = origem.getLatitude(); 
