@@ -11,13 +11,13 @@ public class InterfaceGrafica extends JFrame {
     boolean validade, mesValido;
     LocalDate data, dataValidade;
     Cliente cliente;
-    String descricaoMateriais, descricao, logradouro, nome, email, senha;
+    String descricaoMateriais, descricao, logradouro, nome, email, senha, nomeArquivoLocalizacao;
     double peso, latitude, longitude, cargaMaxima, autonomiaKm;
-    JPanel painelCadastrarNaoPerecivel, painelCadastrarPerecivel, painelCadastrarEntregaOpcao, painelCadastrarCliente, painelCadastrarDrone, painelCadastrarLocalizacao, painelPrincipal, painelLogin, painelCliente, painelConsultarEntregas, painelConsultarCobrancaForm, painelConsultarCobranca, painelAdministrador, painelConsultarTodasEntregas;
-    JLabel rotuloDescricaoMateriaisInvalido, rotuloDroneNaoPerecivel, rotuloDroneNaoPerecivelInvalido, rotuloDescricaoMateriais, rotuloClienteNaoPerecivelInvalido, rotuloClienteNaoPerecivel, rotuloDestinoNaoPerecivelInvalido, rotuloDestinoNaoPerecivel, rotuloOrigemNaoPerecivelInvalido, rotuloOrigemNaoPerecivel, rotuloPesoNaoPerecivelInvalido, rotuloPesoNaoPerecivel, rotuloDescricaoNaoPerecivel, rotuloNumeroNaoPerecivelInvalido, rotuloNumeroNaoPerecivel, rotuloDronePerecivelInvalido, rotuloClientePerecivelInvalido, rotuloDronePerecivel, rotuloValidadePerecivelInvalido, rotuloValidadePerecivel, rotuloClientePerecivel, rotuloDestinoPerecivelInvalido, rotuloDestinoPerecivel, rotuloOrigemPerecivelInvalido, rotuloOrigemPerecivel, rotuloPesoPerecivelInvalido, rotuloPesoPerecivel, rotuloDescricaoPerecivel, rotuloNumeroPerecivelInvalido, rotuloNumeroPerecivel, rotuloSenhaCadastroInvalido, rotuloSenhaCadastro, rotuloEmailCadastroInvalido, rotuloEmailCadastro, rotuloEnderecoInvalido, rotuloEndereco, rotuloNomeInvalido, rotuloNome, rotuloCadastrarDroneStatus, rotuloBaseInvalido, rotuloBase, rotuloAutonomiaInvalido, rotuloAutonomia, rotuloCargaMaximaInvalido, rotuloCargaMaxima, rotuloIdentificadorInvalido, rotuloIdentificador, rotuloCadastrarLocalStatus, rotuloLongitudeInvalido, rotuloLatitudeInvalido, rotuloLatitude, rotuloLongitude, rotuloLogradouro, rotuloCodigoLocalInvalido, rotuloCodigoLocal, rotuloTituloTodasEntregas, rotuloEmail, rotuloSenha, rotuloMensagem, rotuloTituloEntregas, rotuloAno, rotuloMes, rotuloAnoInvalido, rotuloMesInvalido, rotuloTituloEntregasCobrancaMensal;
-    JTextField campoTextoDescricaoMateriais, campoTextoDestinoNaoPerecivel, campoTextoOrigemNaoPerecivel, campoTextoPesoNaoPerecivel, campoTextoDescricaoNaoPerecivel, campoTextoNumeroNaoPerecivel, campoTextoValidadePerecivel, campoTextoDestinoPerecivel, campoTextoOrigemPerecivel, campoTextoPesoPerecivel, campoTextoDescricaoPerecivel, campoTextoNumeroPerecivel, campoTextoEmailCadastro, campoTextoEndereco, campoTextoNome, campoTextoBase, campoTextoAutonomia, campoTextoCargaMaxima, campoTextoIdentificador, campoTextoLongitude, campoTextoLatitude, campoTextoLogradouro, campoTextoCodigoLocal, campoTextoEmail, campoTextoAno, campoTextoMes;
+    JPanel painelSimularCarga, painelCadastrarNaoPerecivel, painelCadastrarPerecivel, painelCadastrarEntregaOpcao, painelCadastrarCliente, painelCadastrarDrone, painelCadastrarLocalizacao, painelPrincipal, painelLogin, painelCliente, painelConsultarEntregas, painelConsultarCobrancaForm, painelConsultarCobranca, painelAdministrador, painelConsultarTodasEntregas;
+    JLabel rotuloLocalizacaoCadastroInvalido, rotuloInformacoesArquivo, rotuloDescricaoMateriaisInvalido, rotuloDroneNaoPerecivel, rotuloDroneNaoPerecivelInvalido, rotuloDescricaoMateriais, rotuloClienteNaoPerecivelInvalido, rotuloClienteNaoPerecivel, rotuloDestinoNaoPerecivelInvalido, rotuloDestinoNaoPerecivel, rotuloOrigemNaoPerecivelInvalido, rotuloOrigemNaoPerecivel, rotuloPesoNaoPerecivelInvalido, rotuloPesoNaoPerecivel, rotuloDescricaoNaoPerecivel, rotuloNumeroNaoPerecivelInvalido, rotuloNumeroNaoPerecivel, rotuloDronePerecivelInvalido, rotuloClientePerecivelInvalido, rotuloDronePerecivel, rotuloValidadePerecivelInvalido, rotuloValidadePerecivel, rotuloClientePerecivel, rotuloDestinoPerecivelInvalido, rotuloDestinoPerecivel, rotuloOrigemPerecivelInvalido, rotuloOrigemPerecivel, rotuloPesoPerecivelInvalido, rotuloPesoPerecivel, rotuloDescricaoPerecivel, rotuloNumeroPerecivelInvalido, rotuloNumeroPerecivel, rotuloSenhaCadastroInvalido, rotuloSenhaCadastro, rotuloEmailCadastroInvalido, rotuloEmailCadastro, rotuloEnderecoInvalido, rotuloEndereco, rotuloNomeInvalido, rotuloNome, rotuloCadastrarDroneStatus, rotuloBaseInvalido, rotuloBase, rotuloAutonomiaInvalido, rotuloAutonomia, rotuloCargaMaximaInvalido, rotuloCargaMaxima, rotuloIdentificadorInvalido, rotuloIdentificador, rotuloCadastrarLocalStatus, rotuloLongitudeInvalido, rotuloLatitudeInvalido, rotuloLatitude, rotuloLongitude, rotuloLogradouro, rotuloCodigoLocalInvalido, rotuloCodigoLocal, rotuloTituloTodasEntregas, rotuloEmail, rotuloSenha, rotuloMensagem, rotuloTituloEntregas, rotuloAno, rotuloMes, rotuloAnoInvalido, rotuloMesInvalido, rotuloTituloEntregasCobrancaMensal;
+    JTextField campoTextoArquivoLocalizacoes, campoTextoDescricaoMateriais, campoTextoDestinoNaoPerecivel, campoTextoOrigemNaoPerecivel, campoTextoPesoNaoPerecivel, campoTextoDescricaoNaoPerecivel, campoTextoNumeroNaoPerecivel, campoTextoValidadePerecivel, campoTextoDestinoPerecivel, campoTextoOrigemPerecivel, campoTextoPesoPerecivel, campoTextoDescricaoPerecivel, campoTextoNumeroPerecivel, campoTextoEmailCadastro, campoTextoEndereco, campoTextoNome, campoTextoBase, campoTextoAutonomia, campoTextoCargaMaxima, campoTextoIdentificador, campoTextoLongitude, campoTextoLatitude, campoTextoLogradouro, campoTextoCodigoLocal, campoTextoEmail, campoTextoAno, campoTextoMes;
     JPasswordField campoTextoSenhaCadastro, campoSenha;
-    JButton botaoCadastrarEntregaNaoPerecivel, botaoSelecionarDroneNaoPerecivel, botaoVoltarCadastrarNaoPerecivel, botaoCadastrarEntrega, botaoSelecionarDronePerecivel, botaoVoltarCadastrarPerecivel, botaoCadastroPerecivel, botaoCadastroNaoPerecivel, botaoVoltarCadastrarEntregaOpcao, botaoCadastrarCliente, botaoVoltarCadastrarCliente, botaoCadastrarDrone, botaoCadastrarLocal, botaoVoltarCadastrarDrone, botaoVoltarConsultarTodasEntregas, botaoVoltarConsultarCobrancaForm, botaoVoltarCadastrarLocal, botaoSairAdmin, botaoSimularCarga, botaoConsultarTodasEntregas, botaoCadastroEntrega, botaoCadastroCliente, botaoCadastroDrone, botaoCadastroLocal, botaoEntrar, botaoConsultarEntregas, botaoConsultarCobranca, botaoVoltarConsultarEntregas, botaoBuscarCobranca, botaoVoltarFormConsultarCobranca, botaoSairCliente;
+    JButton botaoConfirmarDados, botaoVoltarSimularCarga, botaoCadastrarEntregaNaoPerecivel, botaoSelecionarDroneNaoPerecivel, botaoVoltarCadastrarNaoPerecivel, botaoCadastrarEntrega, botaoSelecionarDronePerecivel, botaoVoltarCadastrarPerecivel, botaoCadastroPerecivel, botaoCadastroNaoPerecivel, botaoVoltarCadastrarEntregaOpcao, botaoCadastrarCliente, botaoVoltarCadastrarCliente, botaoCadastrarDrone, botaoCadastrarLocal, botaoVoltarCadastrarDrone, botaoVoltarConsultarTodasEntregas, botaoVoltarConsultarCobrancaForm, botaoVoltarCadastrarLocal, botaoSairAdmin, botaoSimularCarga, botaoConsultarTodasEntregas, botaoCadastroEntrega, botaoCadastroCliente, botaoCadastroDrone, botaoCadastroLocal, botaoEntrar, botaoConsultarEntregas, botaoConsultarCobranca, botaoVoltarConsultarEntregas, botaoBuscarCobranca, botaoVoltarFormConsultarCobranca, botaoSairCliente;
     JTextArea areaTextoCadastrarEntregaNaoPerecivelDados, areaTextoCadastrarEntregaDados, areaTextoCadastrarClienteDados, areaTextoEntregas, areaTextoCobrancaMensal, areaTextoTodasEntregas;
     JScrollPane cadastrarEntregaNaoPerecivelDados, cadastrarEntregaDados, cadastrarClienteDados, entregas, entregasCobrancaMensal;
     JComboBox caixaOpcoesDroneNaoPerecivel, caixaOpcoesClienteNaoPerecivel, caixaOpcoesCliente, caixaOpcoesDrone;
@@ -1266,6 +1266,55 @@ public class InterfaceGrafica extends JFrame {
 
         botaoVoltarConsultarTodasEntregas.addActionListener(e -> {
             cardLayout.show(painelPrincipal, "painelAdministrador");
+        });
+
+        // Painel Simular Carga
+
+        painelSimularCarga = new JPanel();
+        painelSimularCarga.setLayout(null);
+
+        botaoVoltarSimularCarga = new JButton("Voltar");
+        botaoVoltarSimularCarga.setBounds(40, 20, 90, 25);
+        painelSimularCarga.add(botaoVoltarSimularCarga);
+
+        botaoConfirmarDados = new JButton("Enviar");
+        botaoConfirmarDados.setBounds(300, 217, 90, 25);
+        painelSimularCarga.add(botaoConfirmarDados);
+
+        rotuloInformacoesArquivo = new JLabel("Informe o nome do arquivo:");
+        rotuloInformacoesArquivo.setBounds(300, 156, 250, 20);
+        painelSimularCarga.add(rotuloInformacoesArquivo);
+
+        campoTextoArquivoLocalizacoes = new JTextField();
+        campoTextoArquivoLocalizacoes.setBounds(300, 177, 193, 28);
+        painelSimularCarga.add(campoTextoArquivoLocalizacoes);
+
+        rotuloLocalizacaoCadastroInvalido = new JLabel("Digite um arquivo válido.");
+        rotuloLocalizacaoCadastroInvalido.setBounds(493, 177, 250, 20);
+        rotuloLocalizacaoCadastroInvalido.setForeground(Color.BLACK);
+        rotuloLocalizacaoCadastroInvalido.setVisible(false);
+        painelSimularCarga.add(rotuloLocalizacaoCadastroInvalido);
+
+        painelPrincipal.add(painelSimularCarga, "painelSimularCarga");
+
+        botaoVoltarSimularCarga.addActionListener(e -> {
+            rotuloInformacoesArquivo.setVisible(true);
+            rotuloLocalizacaoCadastroInvalido.setVisible(false);
+            botaoConfirmarDados.setVisible(true);
+            campoTextoArquivoLocalizacoes.setText("");
+            cardLayout.show(painelPrincipal, "painelAdministrador");
+        });
+
+        botaoConfirmarDados.addActionListener(e -> {
+            nomeArquivoLocalizacao = campoTextoArquivoLocalizacoes.getText();
+            boolean teste = acmeDrones.simularCargaDeDados(nomeArquivoLocalizacao);
+            if (teste == true) {
+                rotuloLocalizacaoCadastroInvalido.setText("Arquivo importado com sucesso.");
+                rotuloLocalizacaoCadastroInvalido.setVisible(true);
+            } else {
+                rotuloLocalizacaoCadastroInvalido.setText("Ocorreu um erro.");
+                rotuloLocalizacaoCadastroInvalido.setVisible(true);
+            }
         });
 
         // Painel Cliente

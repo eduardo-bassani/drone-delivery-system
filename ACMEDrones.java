@@ -2,9 +2,14 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ACMEDrones {
@@ -356,6 +361,178 @@ public class ACMEDrones {
             return "Não foi encontrado nenhuma entrega no período.";
         } else {
             return cliente.consultarCobrancaMensal(ano, mes);
+        }
+    }
+
+    public boolean simularCargaDeDados(String lerLocalizacao) {       
+        if (lerArquivoTesteLocalizacao(lerLocalizacao)) {
+            return true;
+        } else if (lerArquivoTesteDrone(lerLocalizacao)) {
+            return true;
+        } else if (lerArquivoTesteCliente(lerLocalizacao)) {
+            return true;
+        } else if (lerArquivoTesteEntrega(lerLocalizacao)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean lerArquivoTesteCliente(String a) {
+        Path path = Paths.get(a);
+        if (path.toString().contains("-clientes.dat")) {
+            boolean existe = Files.exists(path);
+            List<Cliente> list = new ArrayList<Cliente>();
+            try (BufferedReader br = Files.newBufferedReader(path, Charset.defaultCharset())) {
+                String line = br.readLine();
+                line = br.readLine();
+                while (line != null) {
+                    String[] vect = line.split(";");
+                    String nome = vect[0];
+                    String email = vect[1];
+                    String senha = vect[2];
+                    int loc = Integer.parseInt(vect[3]);
+                    Localizacao loc1 = buscarLocalizacao(loc);
+                    Cliente clientesTest;
+                    for (int i = 0; i < clientes.size(); i++) {
+                        clientesTest = clientes.get(i);
+                        if (email.equals(clientesTest.getEmail())) {
+                            return false;
+                        }
+                    }
+                    Cliente cli = new Cliente(nome, loc1, email, senha);
+                    list.add(cli);
+                    line = br.readLine();
+                }
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+                return false;
+            }
+            Cliente temp;
+            for (int i = 0; i < list.size(); i++) {
+                temp = list.get(i);
+                clientes.add(temp);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean lerArquivoTesteLocalizacao(String b) {
+        Path path = Paths.get(b);
+        if (path.toString().contains("-localizacoes.dat")) {
+            boolean existe = Files.exists(path);
+            List<Localizacao> list = new ArrayList<Localizacao>();
+            try (BufferedReader br = Files.newBufferedReader(path, Charset.defaultCharset())) {
+                br.readLine();
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    String[] vect = line.split(";");
+                    int codigo = Integer.parseInt(vect[0]);
+                    String logradouro = vect[1];
+                    Double latitude = Double.parseDouble(vect[2]);
+                    Double longitude = Double.parseDouble(vect[3]);
+                    Localizacao locs;
+                    for (int i = 0; i < localizacoes.size(); i++) {
+                        locs = localizacoes.get(i);
+                        if (codigo == locs.getCodigo()) {
+                            return false;
+                        }
+                    }
+                    Localizacao locali = new Localizacao(codigo, logradouro, latitude, longitude);
+                    list.add(locali);
+                }
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+                return false;
+            }
+            Localizacao loc;
+            for (int i = 0; i < list.size(); i++) {
+                loc = list.get(i);
+                localizacoes.add(loc);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean lerArquivoTesteDrone(String c) {
+        Path path = Paths.get(c);
+        if (path.toString().contains("-drones.dat")) {
+            List<Drone> list = new ArrayList<Drone>();
+            try (BufferedReader br = Files.newBufferedReader(path, Charset.defaultCharset())) {
+                String line = br.readLine();
+                line = br.readLine();
+                while (line != null) {
+                    String[] vect = line.split(";");
+                    int identificador = Integer.parseInt(vect[0]);
+                    int loc = Integer.parseInt(vect[3]);
+                    Localizacao base = buscarLocalizacao(loc);
+                    Double cargaMaxima = Double.parseDouble(vect[1]);
+                    Double autonomiaKm = Double.parseDouble(vect[2]);
+                    Drone dro = new Drone(identificador, cargaMaxima, autonomiaKm, base);
+                    list.add(dro);
+                    line = br.readLine();
+                }
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+                return false;
+            }
+            Drone drone;
+            for (int i = 0; i < list.size(); i++) {
+                drone = list.get(i);
+                drones.add(drone);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean lerArquivoTesteEntrega(String d) {
+        try (BufferedReader br = new BufferedReader(new FileReader(d))) {
+            String linha, descricao;
+            int tipo, numero;
+            Localizacao origem, destino;
+            LocalDate data, validade;
+            double peso;
+            String descricaoMateriais;
+            Cliente cliente;
+            br.readLine();
+            while ((linha = br.readLine()) != null) {
+                String[] campos = linha.split(";");
+                if (campos.length == 9) {
+                    tipo = Integer.parseInt(campos[0]);
+                    numero = Integer.parseInt(campos[1]);
+                    descricao = campos[2];
+                    String[] dataSeparada = campos[3].split("/");
+                    data = LocalDate.of(Integer.parseInt(dataSeparada[2]), Integer.parseInt(dataSeparada[1]), Integer.parseInt(dataSeparada[0]));
+                    peso = Double.parseDouble(campos[4]);
+                    cliente = buscarCliente(campos[5]);
+                    origem = buscarLocalizacao(Integer.parseInt(campos[6]));
+                    destino = buscarLocalizacao(Integer.parseInt(campos[7]));
+                    if (tipo == 1) {
+                        dataSeparada = campos[8].split("/");
+                        validade = LocalDate.of(Integer.parseInt(dataSeparada[2]), Integer.parseInt(dataSeparada[1]), Integer.parseInt(dataSeparada[0]));
+                        EntregaPerecivel entregaPerecivel = new EntregaPerecivel(numero, descricao, data, peso, origem, destino, cliente, validade);
+                        if (dronesCapacitados(entregaPerecivel).isEmpty() == false) {
+                            entregaPerecivel.setDrone(dronesCapacitados(entregaPerecivel).get(0));
+                            entregas.add(entregaPerecivel);
+                            cliente.adicionarEntrega(entregaPerecivel);
+                        }
+                    } else if (tipo == 2) {
+                        descricaoMateriais = campos[8];
+                        EntregaNaoPerecivel entregaNaoPerecivel = new EntregaNaoPerecivel(numero, descricao, data, peso, origem, destino, cliente, descricaoMateriais);
+                        if (dronesCapacitados(entregaNaoPerecivel).isEmpty() == false) {
+                            entregaNaoPerecivel.setDrone(dronesCapacitados(entregaNaoPerecivel).get(0));
+                            entregas.add(entregaNaoPerecivel);
+                            cliente.adicionarEntrega(entregaNaoPerecivel);
+                        }
+                    }
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }
