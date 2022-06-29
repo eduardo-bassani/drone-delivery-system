@@ -87,10 +87,10 @@ public class Cliente {
     }
 
     public String toCsv() {
-        return nome + ";" + email + ";" + senha + ";" + endereco.getCodigo();
+        return nome + ";" + endereco.getCodigo() + ";" + email + ";" + senha;
     }
 
     public String toString() {
-        return "[email=" + email + ", endereco=" + endereco + ", nome=" + nome + ", senha=" + senha + "]";
+        return "[Email: " + email + ", Localização do endereço: " + endereco + ", Nome: " + nome + ", Senha: " + senha + "]";
     }
 }

@@ -48,7 +48,7 @@ public class Localizacao {
     }
 
     public String toString() {
-        return "[codigo=" + codigo + ", latitude=" + latitude + ", logradouro=" + logradouro
-                + ", longitude=" + longitude + "]";
+        return "[Código: " + codigo + ", Latitude: " + latitude + ", Logradouro: " + logradouro
+                + ", Longitude: " + longitude + "]";
     }
 }

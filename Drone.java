@@ -51,6 +51,24 @@ public class Drone {
         this.base = base;
     }
 
+    public double distancia(Localizacao l) {
+        double lat1 = base.getLatitude(); 
+        double lon1 = base.getLongitude();
+        double lat2 = l.getLatitude();
+        double lon2 = l.getLongitude();
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        lat1 = Math.toRadians(lat1);
+        lat2 = Math.toRadians(lat2);
+        double a = Math.pow(Math.sin(dLat / 2), 2) +
+                   Math.pow(Math.sin(dLon / 2), 2) *
+                   Math.cos(lat1) *
+                   Math.cos(lat2);
+        double rad = 6371;
+        double c = 2 * Math.asin(Math.sqrt(a));
+        return rad * c;
+    }
+
     public boolean adicionarEntrega(Entrega entrega) {
         return entregas.add(entrega);
     }
@@ -60,7 +78,7 @@ public class Drone {
     }
 
     public String toString() {
-        return "[autonomiaKm=" + autonomiaKm + ", base=" + base + ", cargaMaxima=" + cargaMaxima
-                + ", identificador=" + identificador + "]";
+        return "[Autonomia: " + autonomiaKm + ", Localização da Base: " + base + ", Carga maxima: " + cargaMaxima
+                + ", Identificador: " + identificador + "]";
     }
 }

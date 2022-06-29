@@ -24,12 +24,12 @@ public class EntregaNaoPerecivel extends Entrega {
 
     public String toCsv() {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return "2;" + numero + ";" + descricao + ";" + data.format(formato) + ";" + peso + ";" + cliente.getEmail() + ";" + origem.getCodigo() + ";" + destino.getCodigo() + ";" + descricaoMateriais;
+        return "2;" + numero + ";" + descricao + ";" + data.format(formato) + ";" + peso + ";" + origem.getCodigo() + ";" + destino.getCodigo() + ";" + situacao + ";" + drone.getIdentificador() + ";" + cliente.getEmail() + ";" + descricaoMateriais;
     }
 
     public String toString() {
-        return "[cliente=" + cliente + ", data=" + data + ", descricao=" + descricao + ", descricaoMateriais=" + descricaoMateriais
-                + ", destino=" + destino + ", drone=" + drone + ", numero=" + numero + ", origem=" + origem + ", peso=" + peso
-                + ", situacao=" + situacao + ", valor=" + calculaValor() + "]";
+        return "Número: " + numero + "\nDescrição: " + descricao + "\nData: " + data + "\nPeso: "
+            + peso + "\nLocalização de origem: " + origem + "\nLocalização de destino: " + destino
+            + "\nSituação: " + situacao + "\nDrone: " + drone + "\nCliente: " + cliente + "\nDescrição dos Materiais: " + descricaoMateriais + "\nValor: " + calculaValor();
     }
 }
