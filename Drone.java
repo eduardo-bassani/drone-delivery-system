@@ -1,57 +1,57 @@
 import java.util.ArrayList;
 
 public class Drone {
-    private int identificador;
-    private double cargaMaxima;
-    private double autonomiaKm;
-    private Localizacao base;
-    private ArrayList<Entrega> entregas;
+    private int identifier;
+    private double maxLoad;
+    private double autonomyKm;
+    private Location base;
+    private ArrayList<Delivery> deliveries;
 
-    public Drone(int identificador, double cargaMaxima, double autonomiaKm, Localizacao base) {
-        this.identificador = identificador;
-        this.cargaMaxima = cargaMaxima;
-        this.autonomiaKm = autonomiaKm;
+    public Drone(int identifier, double maxLoad, double autonomyKm, Location base) {
+        this.identifier = identifier;
+        this.maxLoad = maxLoad;
+        this.autonomyKm = autonomyKm;
         this.base = base;
-        this.entregas = new ArrayList<Entrega>();
+        this.deliveries = new ArrayList<Delivery>();
     }
 
-    public int getIdentificador() {
-        return identificador;
+    public int getIdentifier() {
+        return identifier;
     }
 
-    public double getCargaMaxima() {
-        return cargaMaxima;
+    public double getMaxLoad() {
+        return maxLoad;
     }
 
-    public double getAutonomiaKm() {
-        return autonomiaKm;
+    public double getAutonomyKm() {
+        return autonomyKm;
     }
 
-    public Localizacao getBase() {
+    public Location getBase() {
         return base;
     }
 
-    public ArrayList<Entrega> getEntregas() {
-        return entregas;
+    public ArrayList<Delivery> getDeliveries() {
+        return deliveries;
     }
 
-    public void setIdentificador(int identificador) {
-        this.identificador = identificador;
+    public void setIdentifier(int identifier) {
+        this.identifier = identifier;
     }
 
-    public void setCargaMaxima(double cargaMaxima) {
-        this.cargaMaxima = cargaMaxima;
+    public void setMaxLoad(double maxLoad) {
+        this.maxLoad = maxLoad;
     }
 
-    public void setAutonomiaKm(double autonomiaKm) {
-        this.autonomiaKm = autonomiaKm;
+    public void setAutonomyKm(double autonomyKm) {
+        this.autonomyKm = autonomyKm;
     }
 
-    public void setBase(Localizacao base) {
+    public void setBase(Location base) {
         this.base = base;
     }
 
-    public double distancia(Localizacao l) {
+    public double distance(Location l) {
         double lat1 = base.getLatitude(); 
         double lon1 = base.getLongitude();
         double lat2 = l.getLatitude();
@@ -69,16 +69,16 @@ public class Drone {
         return rad * c;
     }
 
-    public boolean adicionarEntrega(Entrega entrega) {
-        return entregas.add(entrega);
+    public boolean addDelivery(Delivery delivery) {
+        return deliveries.add(delivery);
     }
 
     public String toCsv() {
-        return identificador + ";" + cargaMaxima + ";" + autonomiaKm + ";" + base.getCodigo();
+        return identifier + ";" + maxLoad + ";" + autonomyKm + ";" + base.getCode();
     }
 
     public String toString() {
-        return "[Autonomia: " + autonomiaKm + ", Localização da Base: " + base + ", Carga maxima: " + cargaMaxima
-                + ", Identificador: " + identificador + "]";
+        return "[Autonomy: " + autonomyKm + ", Base Location: " + base + ", Max Load: " + maxLoad
+                + ", Identifier: " + identifier + "]";
     }
 }

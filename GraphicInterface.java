@@ -5,12 +5,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class InterfaceGrafica extends JFrame {
+public class GraphicInterface extends JFrame {
     CardLayout cardLayout;
     int origem, destino, ano, mes, codigo, identificador, base, endereco, numero;
     boolean validade, mesValido;
     LocalDate data, dataValidade;
-    Cliente cliente;
+    Customer cliente;
     String descricaoMateriais, descricao, logradouro, nome, email, senha, nomeArquivoLocalizacao;
     double peso, latitude, longitude, cargaMaxima, autonomiaKm;
     JPanel painelSimularCarga, painelCadastrarNaoPerecivel, painelCadastrarPerecivel, painelCadastrarEntregaOpcao, painelCadastrarCliente, painelCadastrarDrone, painelCadastrarLocalizacao, painelPrincipal, painelLogin, painelCliente, painelConsultarEntregas, painelConsultarCobrancaForm, painelConsultarCobranca, painelAdministrador, painelConsultarTodasEntregas;
@@ -21,11 +21,11 @@ public class InterfaceGrafica extends JFrame {
     JTextArea areaTextoCadastrarEntregaNaoPerecivelDados, areaTextoCadastrarEntregaDados, areaTextoCadastrarClienteDados, areaTextoEntregas, areaTextoCobrancaMensal, areaTextoTodasEntregas;
     JScrollPane cadastrarEntregaNaoPerecivelDados, cadastrarEntregaDados, cadastrarClienteDados, entregas, entregasCobrancaMensal;
     JComboBox caixaOpcoesDroneNaoPerecivel, caixaOpcoesClienteNaoPerecivel, caixaOpcoesCliente, caixaOpcoesDrone;
-    EntregaPerecivel entregaPerecivel;
-    EntregaNaoPerecivel entregaNaoPerecivel;
+    PerishableDelivery entregaPerecivel;
+    NonPerishableDelivery entregaNaoPerecivel;
     Drone drone;
 
-    public InterfaceGrafica(ACMEDrones acmeDrones) {
+    public GraphicInterface(ACMEDrones acmeDrones) {
         super();
 
         setTitle("ACME Drones");
@@ -36,7 +36,7 @@ public class InterfaceGrafica extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                acmeDrones.salvarDados();
+                acmeDrones.saveData();
             }
         });
 
@@ -58,7 +58,7 @@ public class InterfaceGrafica extends JFrame {
         campoTextoEmail.setBounds(300, 177, 193, 28);
         painelLogin.add(campoTextoEmail);
 
-        rotuloSenha = new JLabel("Senha");
+        rotuloSenha = new JLabel("Password");
         rotuloSenha.setBounds(300, 205, 70, 20);
         painelLogin.add(rotuloSenha);
 
@@ -66,13 +66,13 @@ public class InterfaceGrafica extends JFrame {
         campoSenha.setBounds(300, 225, 193, 28);
         painelLogin.add(campoSenha);
 
-        botaoEntrar = new JButton("Entrar");
+        botaoEntrar = new JButton("Login");
         botaoEntrar.setBounds(300, 260, 90, 25);
         // botaoEntrar.setForeground(Color.WHITE);
         // botaoEntrar.setBackground(Color.BLACK);
         painelLogin.add(botaoEntrar);
 
-        rotuloMensagem = new JLabel("Seu usuário ou senha estão incorretos.");
+        rotuloMensagem = new JLabel("Your username or password is incorrect.");
         rotuloMensagem.setBounds(300, 290, 280, 20);
         rotuloMensagem.setForeground(Color.RED);
         rotuloMensagem.setVisible(false);
@@ -83,7 +83,7 @@ public class InterfaceGrafica extends JFrame {
         botaoEntrar.addActionListener(e -> {
             String email = campoTextoEmail.getText();
             String senha = String.valueOf(campoSenha.getPassword());
-            if (acmeDrones.realizarLogin(email, senha)) {
+            if (acmeDrones.login(email, senha)) {
                 if (acmeDrones.isAdmin()) {
                     cardLayout.show(painelPrincipal, "painelAdministrador");
                 } else {
@@ -99,31 +99,31 @@ public class InterfaceGrafica extends JFrame {
         painelAdministrador = new JPanel();
         painelAdministrador.setLayout(new BoxLayout(painelAdministrador, BoxLayout.PAGE_AXIS));
 
-        botaoCadastroLocal = new JButton("Cadastrar nova localização");
+        botaoCadastroLocal = new JButton("Register new location");
         botaoCadastroLocal.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelAdministrador.add(botaoCadastroLocal);
 
-        botaoCadastroDrone = new JButton("Cadastrar novo drone");
+        botaoCadastroDrone = new JButton("Register new drone");
         botaoCadastroDrone.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelAdministrador.add(botaoCadastroDrone);
 
-        botaoCadastroCliente = new JButton("Cadastrar novo cliente");
+        botaoCadastroCliente = new JButton("Register new customer");
         botaoCadastroCliente.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelAdministrador.add(botaoCadastroCliente);
 
-        botaoCadastroEntrega = new JButton("Cadastrar nova entrega");
+        botaoCadastroEntrega = new JButton("Register new delivery");
         botaoCadastroEntrega.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelAdministrador.add(botaoCadastroEntrega);
 
-        botaoConsultarTodasEntregas = new JButton("Consultar todas as entregas");
+        botaoConsultarTodasEntregas = new JButton("View all deliveries");
         botaoConsultarTodasEntregas.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelAdministrador.add(botaoConsultarTodasEntregas);
 
-        botaoSimularCarga = new JButton("Simular carga de dados");
+        botaoSimularCarga = new JButton("Simulate data load");
         botaoSimularCarga.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelAdministrador.add(botaoSimularCarga);
 
-        botaoSairAdmin = new JButton("Sair");
+        botaoSairAdmin = new JButton("Logout");
         botaoSairAdmin.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelAdministrador.add(botaoSairAdmin);
 
@@ -146,7 +146,7 @@ public class InterfaceGrafica extends JFrame {
         });
 
         botaoConsultarTodasEntregas.addActionListener(e -> {
-            areaTextoTodasEntregas.setText(acmeDrones.consultarTodasEntregas());
+            areaTextoTodasEntregas.setText(acmeDrones.viewAllDeliveries());
             cardLayout.show(painelPrincipal, "painelConsultarTodasEntregas");
         });
 
@@ -166,11 +166,11 @@ public class InterfaceGrafica extends JFrame {
         painelCadastrarLocalizacao = new JPanel();
         painelCadastrarLocalizacao.setLayout(null);
 
-        botaoVoltarCadastrarLocal = new JButton("Voltar");
+        botaoVoltarCadastrarLocal = new JButton("Back");
         botaoVoltarCadastrarLocal.setBounds(40, 20, 90, 25);
         painelCadastrarLocalizacao.add(botaoVoltarCadastrarLocal);
 
-        rotuloCodigoLocal = new JLabel("Código");
+        rotuloCodigoLocal = new JLabel("Identifier");
         rotuloCodigoLocal.setBounds(300, 158, 70, 20);
         painelCadastrarLocalizacao.add(rotuloCodigoLocal);
 
@@ -184,7 +184,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloCodigoLocalInvalido.setVisible(false);
         painelCadastrarLocalizacao.add(rotuloCodigoLocalInvalido);
 
-        rotuloLogradouro = new JLabel("Logradouro");
+        rotuloLogradouro = new JLabel("Street");
         rotuloLogradouro.setBounds(300, 205, 200, 20);
         painelCadastrarLocalizacao.add(rotuloLogradouro);
 
@@ -200,7 +200,7 @@ public class InterfaceGrafica extends JFrame {
         campoTextoLatitude.setBounds(300, 275, 193, 28);
         painelCadastrarLocalizacao.add(campoTextoLatitude);
 
-        rotuloLatitudeInvalido = new JLabel("Digite uma latitude válida.");
+        rotuloLatitudeInvalido = new JLabel("Enter a valid latitude.");
         rotuloLatitudeInvalido.setBounds(493, 275, 250, 20);
         rotuloLatitudeInvalido.setForeground(Color.RED);
         rotuloLatitudeInvalido.setVisible(false);
@@ -214,13 +214,13 @@ public class InterfaceGrafica extends JFrame {
         campoTextoLongitude.setBounds(300, 325, 193, 28);
         painelCadastrarLocalizacao.add(campoTextoLongitude);
 
-        rotuloLongitudeInvalido = new JLabel("Digite uma longitude válida.");
+        rotuloLongitudeInvalido = new JLabel("Enter a valid longitude.");
         rotuloLongitudeInvalido.setBounds(493, 325, 250, 20);
         rotuloLongitudeInvalido.setForeground(Color.RED);
         rotuloLongitudeInvalido.setVisible(false);
         painelCadastrarLocalizacao.add(rotuloLongitudeInvalido);
 
-        botaoCadastrarLocal = new JButton("Cadastrar");
+        botaoCadastrarLocal = new JButton("Register");
         botaoCadastrarLocal.setBounds(300, 365, 90, 25);
         painelCadastrarLocalizacao.add(botaoCadastrarLocal);
 
@@ -248,14 +248,14 @@ public class InterfaceGrafica extends JFrame {
             try {
                 codigo = Integer.parseInt(campoTextoCodigoLocal.getText());
                 if (codigo < 0) {
-                    rotuloCodigoLocalInvalido.setText("Digite um código válido.");
+                    rotuloCodigoLocalInvalido.setText("Enter a valid identifier.");
                     rotuloCodigoLocalInvalido.setVisible(true);
                     validade = false;
                 } else {
                     rotuloCodigoLocalInvalido.setVisible(false);
                 }
             } catch (Exception exc) {
-                rotuloCodigoLocalInvalido.setText("Digite um código válido.");
+                rotuloCodigoLocalInvalido.setText("Enter a valid identifier.");
                 rotuloCodigoLocalInvalido.setVisible(true);
                 validade = false;
             }
@@ -275,8 +275,8 @@ public class InterfaceGrafica extends JFrame {
                 validade = false;
             }
             if (validade == true) {
-                if (acmeDrones.cadastrarLocalizacao(codigo, logradouro, latitude, longitude)) {
-                    rotuloCadastrarLocalStatus.setText("Localização cadastrada com sucesso.");
+                if (acmeDrones.registerLocation(codigo, logradouro, latitude, longitude)) {
+                    rotuloCadastrarLocalStatus.setText("Location registered successfully.");
                     rotuloCadastrarLocalStatus.setVisible(true);
                     botaoCadastrarLocal.setVisible(false);
                     campoTextoCodigoLocal.setText("");
@@ -284,7 +284,7 @@ public class InterfaceGrafica extends JFrame {
                     campoTextoLatitude.setText("");
                     campoTextoLongitude.setText("");
                 } else {
-                    rotuloCodigoLocalInvalido.setText("Código já cadastrada.");
+                    rotuloCodigoLocalInvalido.setText("Location with identifier already registered.");
                     rotuloCodigoLocalInvalido.setVisible(true);
                 }
             }
@@ -295,11 +295,11 @@ public class InterfaceGrafica extends JFrame {
         painelCadastrarDrone = new JPanel();
         painelCadastrarDrone.setLayout(null);
 
-        botaoVoltarCadastrarDrone = new JButton("Voltar");
+        botaoVoltarCadastrarDrone = new JButton("Back");
         botaoVoltarCadastrarDrone.setBounds(40, 20, 90, 25);
         painelCadastrarDrone.add(botaoVoltarCadastrarDrone);
 
-        rotuloIdentificador = new JLabel("Identificador");
+        rotuloIdentificador = new JLabel("Identifier");
         rotuloIdentificador.setBounds(300, 158, 300, 20);
         painelCadastrarDrone.add(rotuloIdentificador);
 
@@ -313,7 +313,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloIdentificadorInvalido.setVisible(false);
         painelCadastrarDrone.add(rotuloIdentificadorInvalido);
 
-        rotuloCargaMaxima = new JLabel("Carga máxima (em quilos)");
+        rotuloCargaMaxima = new JLabel("Max Load (kg)");
         rotuloCargaMaxima.setBounds(300, 205, 300, 20);
         painelCadastrarDrone.add(rotuloCargaMaxima);
 
@@ -321,13 +321,13 @@ public class InterfaceGrafica extends JFrame {
         campoTextoCargaMaxima.setBounds(300, 225, 193, 28);
         painelCadastrarDrone.add(campoTextoCargaMaxima);
 
-        rotuloCargaMaximaInvalido = new JLabel("Digite um peso válida.");
+        rotuloCargaMaximaInvalido = new JLabel("Enter a valid weight.");
         rotuloCargaMaximaInvalido.setBounds(493, 225, 300, 20);
         rotuloCargaMaximaInvalido.setForeground(Color.RED);
         rotuloCargaMaximaInvalido.setVisible(false);
         painelCadastrarDrone.add(rotuloCargaMaximaInvalido);
 
-        rotuloAutonomia = new JLabel("Autonomia (em quilômetros)");
+        rotuloAutonomia = new JLabel("Flight range (km)");
         rotuloAutonomia.setBounds(300, 255, 300, 20);
         painelCadastrarDrone.add(rotuloAutonomia);
 
@@ -335,13 +335,13 @@ public class InterfaceGrafica extends JFrame {
         campoTextoAutonomia.setBounds(300, 275, 193, 28);
         painelCadastrarDrone.add(campoTextoAutonomia);
 
-        rotuloAutonomiaInvalido = new JLabel("Digite uma distância válida.");
+        rotuloAutonomiaInvalido = new JLabel("Enter a valid distance.");
         rotuloAutonomiaInvalido.setBounds(493, 275, 300, 20);
         rotuloAutonomiaInvalido.setForeground(Color.RED);
         rotuloAutonomiaInvalido.setVisible(false);
         painelCadastrarDrone.add(rotuloAutonomiaInvalido);
 
-        rotuloBase = new JLabel("Código de sua base");
+        rotuloBase = new JLabel("Base Location Identifier");
         rotuloBase.setBounds(300, 305, 300, 20);
         painelCadastrarDrone.add(rotuloBase);
 
@@ -355,7 +355,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloBaseInvalido.setVisible(false);
         painelCadastrarDrone.add(rotuloBaseInvalido);
 
-        botaoCadastrarDrone = new JButton("Cadastrar");
+        botaoCadastrarDrone = new JButton("Register");
         botaoCadastrarDrone.setBounds(300, 365, 90, 25);
         painelCadastrarDrone.add(botaoCadastrarDrone);
 
@@ -384,14 +384,14 @@ public class InterfaceGrafica extends JFrame {
             try {
                 identificador = Integer.parseInt(campoTextoIdentificador.getText());
                 if (identificador < 0) {
-                    rotuloIdentificadorInvalido.setText("Digite um número válido.");
+                    rotuloIdentificadorInvalido.setText("Enter a valid number.");
                     rotuloIdentificadorInvalido.setVisible(true);
                     validade = false;
                 } else {
                     rotuloIdentificadorInvalido.setVisible(false);
                 }
             } catch (Exception exc) {
-                rotuloIdentificadorInvalido.setText("Digite um número válido.");
+                rotuloIdentificadorInvalido.setText("Enter a valid number.");
                 rotuloIdentificadorInvalido.setVisible(true);
                 validade = false;
             }
@@ -421,21 +421,21 @@ public class InterfaceGrafica extends JFrame {
             }
             try {
                 base = Integer.parseInt(campoTextoBase.getText());
-                if (acmeDrones.localizacaoExistente(base) == false) {
-                    rotuloBaseInvalido.setText("Localização com código não cadastrada.");
+                if (acmeDrones.locationExists(base) == false) {
+                    rotuloBaseInvalido.setText("Location with identifier not registered.");
                     rotuloBaseInvalido.setVisible(true);
                     validade = false;
                 } else {
                     rotuloBaseInvalido.setVisible(false);
                 }
             } catch (Exception exc) {
-                rotuloBaseInvalido.setText("Digite um número válido.");
+                rotuloBaseInvalido.setText("Enter a valid number.");
                 rotuloBaseInvalido.setVisible(true);
                 validade = false;
             }
             if (validade == true) {
-                if (acmeDrones.cadastrarDrone(identificador, cargaMaxima, autonomiaKm, acmeDrones.buscarLocalizacao(base))) {
-                    rotuloCadastrarDroneStatus.setText("Drone cadastrado com sucesso.");
+                if (acmeDrones.registerDrone(identificador, cargaMaxima, autonomiaKm, acmeDrones.findLocation(base))) {
+                    rotuloCadastrarDroneStatus.setText("Drone registered successfully.");
                     rotuloCadastrarDroneStatus.setVisible(true);
                     botaoCadastrarDrone.setVisible(false);
                     campoTextoIdentificador.setText("");
@@ -443,7 +443,7 @@ public class InterfaceGrafica extends JFrame {
                     campoTextoAutonomia.setText("");
                     campoTextoBase.setText("");
                 } else {
-                    rotuloIdentificadorInvalido.setText("Identificador já cadastrada.");
+                    rotuloIdentificadorInvalido.setText("Drone with identifier already registered.");
                     rotuloIdentificadorInvalido.setVisible(true);
                 }
             }
@@ -454,11 +454,11 @@ public class InterfaceGrafica extends JFrame {
         painelCadastrarCliente = new JPanel();
         painelCadastrarCliente.setLayout(null);
 
-        botaoVoltarCadastrarCliente = new JButton("Voltar");
+        botaoVoltarCadastrarCliente = new JButton("Back");
         botaoVoltarCadastrarCliente.setBounds(40, 20, 90, 25);
         painelCadastrarCliente.add(botaoVoltarCadastrarCliente);
 
-        rotuloNome = new JLabel("Nome");
+        rotuloNome = new JLabel("Name");
         rotuloNome.setBounds(300, 158, 300, 20);
         painelCadastrarCliente.add(rotuloNome);
 
@@ -466,13 +466,13 @@ public class InterfaceGrafica extends JFrame {
         campoTextoNome.setBounds(300, 177, 193, 28);
         painelCadastrarCliente.add(campoTextoNome);
 
-        rotuloNomeInvalido = new JLabel("Digite um nome válido.");
+        rotuloNomeInvalido = new JLabel("Enter a valid name.");
         rotuloNomeInvalido.setBounds(493, 177, 200, 20);
         rotuloNomeInvalido.setForeground(Color.RED);
         rotuloNomeInvalido.setVisible(false);
         painelCadastrarCliente.add(rotuloNomeInvalido);
 
-        rotuloEndereco = new JLabel("Código de seu endereço");
+        rotuloEndereco = new JLabel("Address Location Idenitifier");
         rotuloEndereco.setBounds(300, 205, 300, 20);
         painelCadastrarCliente.add(rotuloEndereco);
 
@@ -500,7 +500,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloEmailCadastroInvalido.setVisible(false);
         painelCadastrarCliente.add(rotuloEmailCadastroInvalido);
 
-        rotuloSenhaCadastro = new JLabel("Senha");
+        rotuloSenhaCadastro = new JLabel("Password");
         rotuloSenhaCadastro.setBounds(300, 305, 300, 20);
         painelCadastrarCliente.add(rotuloSenhaCadastro);
 
@@ -508,13 +508,13 @@ public class InterfaceGrafica extends JFrame {
         campoTextoSenhaCadastro.setBounds(300, 325, 193, 28);
         painelCadastrarCliente.add(campoTextoSenhaCadastro);
 
-        rotuloSenhaCadastroInvalido = new JLabel("No mínimo 5 dígitos.");
+        rotuloSenhaCadastroInvalido = new JLabel("At least 5 digits.");
         rotuloSenhaCadastroInvalido.setBounds(493, 325, 300, 20);
         rotuloSenhaCadastroInvalido.setForeground(Color.RED);
         rotuloSenhaCadastroInvalido.setVisible(false);
         painelCadastrarCliente.add(rotuloSenhaCadastroInvalido);
 
-        botaoCadastrarCliente = new JButton("Cadastrar");
+        botaoCadastrarCliente = new JButton("Register");
         botaoCadastrarCliente.setBounds(300, 365, 90, 25);
         painelCadastrarCliente.add(botaoCadastrarCliente);
 
@@ -552,21 +552,21 @@ public class InterfaceGrafica extends JFrame {
             }
             try {
                 endereco = Integer.parseInt(campoTextoEndereco.getText());
-                if (acmeDrones.localizacaoExistente(endereco) == false) {
-                    rotuloEnderecoInvalido.setText("Localização com código não cadastrada.");
+                if (acmeDrones.locationExists(endereco) == false) {
+                    rotuloEnderecoInvalido.setText("Location with identifier not registered.");
                     rotuloEnderecoInvalido.setVisible(true);
                     validade = false;
                 } else {
                     rotuloEnderecoInvalido.setVisible(false);
                 }
             } catch (Exception exc) {
-                rotuloEnderecoInvalido.setText("Digite um número válido.");
+                rotuloEnderecoInvalido.setText("Enter a valid number.");
                 rotuloEnderecoInvalido.setVisible(true);
                 validade = false;
             }
             email = campoTextoEmailCadastro.getText();
             if (email.isEmpty()) {
-                rotuloEmailCadastroInvalido.setText("Digite um email válido.");
+                rotuloEmailCadastroInvalido.setText("Enter a valid email.");
                 rotuloEmailCadastroInvalido.setVisible(true);
                 validade = false;
             } else {
@@ -580,8 +580,8 @@ public class InterfaceGrafica extends JFrame {
                 rotuloSenhaCadastroInvalido.setVisible(false);
             }
             if (validade == true) {
-                if (acmeDrones.cadastrarCliente(nome, acmeDrones.buscarLocalizacao(endereco), email, senha)) {
-                    areaTextoCadastrarClienteDados.setText("Cliente cadastrado. Dados:\n" + acmeDrones.buscarCliente(email));
+                if (acmeDrones.registerCustomer(nome, acmeDrones.findLocation(endereco), email, senha)) {
+                    areaTextoCadastrarClienteDados.setText("Customer registered successfully. Data:\n" + acmeDrones.findCustomer(email));
                     cadastrarClienteDados.setVisible(true);
                     botaoCadastrarCliente.setVisible(false);
                     campoTextoNome.setText("");
@@ -589,7 +589,7 @@ public class InterfaceGrafica extends JFrame {
                     campoTextoEmailCadastro.setText("");
                     campoTextoSenhaCadastro.setText("");
                 } else {
-                    rotuloEmailCadastroInvalido.setText("Email já cadastrada.");
+                    rotuloEmailCadastroInvalido.setText("Email already registered.");
                     rotuloEmailCadastroInvalido.setVisible(true);
                 }
             }
@@ -600,15 +600,15 @@ public class InterfaceGrafica extends JFrame {
         painelCadastrarEntregaOpcao = new JPanel();
         painelCadastrarEntregaOpcao.setLayout(new BoxLayout(painelCadastrarEntregaOpcao, BoxLayout.PAGE_AXIS));
 
-        botaoCadastroPerecivel = new JButton("Cadastrar entrega perecível");
+        botaoCadastroPerecivel = new JButton("Register Perishable Delivery");
         botaoCadastroPerecivel.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelCadastrarEntregaOpcao.add(botaoCadastroPerecivel);
 
-        botaoCadastroNaoPerecivel = new JButton("Cadastrar entrega não perecível");
+        botaoCadastroNaoPerecivel = new JButton("Register Non-Perishable Delivery");
         botaoCadastroNaoPerecivel.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelCadastrarEntregaOpcao.add(botaoCadastroNaoPerecivel);
 
-        botaoVoltarCadastrarEntregaOpcao = new JButton("Voltar");
+        botaoVoltarCadastrarEntregaOpcao = new JButton("Back");
         botaoVoltarCadastrarEntregaOpcao.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelCadastrarEntregaOpcao.add(botaoVoltarCadastrarEntregaOpcao);
 
@@ -619,9 +619,9 @@ public class InterfaceGrafica extends JFrame {
         });
 
         botaoCadastroPerecivel.addActionListener(e -> {
-            String[] emailClientes = new String[acmeDrones.quantidadeClientes()];
-            for (int i = 0; i < acmeDrones.quantidadeClientes(); i++) {
-                emailClientes[i] = acmeDrones.getClientes().get(i).getEmail();
+            String[] emailClientes = new String[acmeDrones.customerCount()];
+            for (int i = 0; i < acmeDrones.customerCount(); i++) {
+                emailClientes[i] = acmeDrones.getCustomers().get(i).getEmail();
             }
             painelCadastrarPerecivel.remove(caixaOpcoesCliente);
             caixaOpcoesCliente = new JComboBox<String>(emailClientes);
@@ -666,9 +666,9 @@ public class InterfaceGrafica extends JFrame {
         });
 
         botaoCadastroNaoPerecivel.addActionListener(e -> {
-            String[] emailClientes = new String[acmeDrones.quantidadeClientes()];
-            for (int i = 0; i < acmeDrones.quantidadeClientes(); i++) {
-                emailClientes[i] = acmeDrones.getClientes().get(i).getEmail();
+            String[] emailClientes = new String[acmeDrones.customerCount()];
+            for (int i = 0; i < acmeDrones.customerCount(); i++) {
+                emailClientes[i] = acmeDrones.getCustomers().get(i).getEmail();
             }
             painelCadastrarNaoPerecivel.remove(caixaOpcoesClienteNaoPerecivel);
             caixaOpcoesClienteNaoPerecivel = new JComboBox<String>(emailClientes);
@@ -717,11 +717,11 @@ public class InterfaceGrafica extends JFrame {
         painelCadastrarPerecivel = new JPanel();
         painelCadastrarPerecivel.setLayout(null);
 
-        botaoVoltarCadastrarPerecivel = new JButton("Voltar");
+        botaoVoltarCadastrarPerecivel = new JButton("Back");
         botaoVoltarCadastrarPerecivel.setBounds(40, 20, 90, 25);
         painelCadastrarPerecivel.add(botaoVoltarCadastrarPerecivel);
 
-        rotuloNumeroPerecivel = new JLabel("Número");
+        rotuloNumeroPerecivel = new JLabel("Identifier");
         rotuloNumeroPerecivel.setBounds(300, 58, 300, 20);
         painelCadastrarPerecivel.add(rotuloNumeroPerecivel);
 
@@ -735,7 +735,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloNumeroPerecivelInvalido.setVisible(false);
         painelCadastrarPerecivel.add(rotuloNumeroPerecivelInvalido);
 
-        rotuloDescricaoPerecivel = new JLabel("Descrição");
+        rotuloDescricaoPerecivel = new JLabel("Description");
         rotuloDescricaoPerecivel.setBounds(300, 108, 300, 20);
         painelCadastrarPerecivel.add(rotuloDescricaoPerecivel);
 
@@ -743,7 +743,7 @@ public class InterfaceGrafica extends JFrame {
         campoTextoDescricaoPerecivel.setBounds(300, 128, 193, 28);
         painelCadastrarPerecivel.add(campoTextoDescricaoPerecivel);
 
-        rotuloPesoPerecivel = new JLabel("Peso");
+        rotuloPesoPerecivel = new JLabel("Weight");
         rotuloPesoPerecivel.setBounds(300, 158, 300, 20);
         painelCadastrarPerecivel.add(rotuloPesoPerecivel);
 
@@ -751,13 +751,13 @@ public class InterfaceGrafica extends JFrame {
         campoTextoPesoPerecivel.setBounds(300, 177, 193, 28);
         painelCadastrarPerecivel.add(campoTextoPesoPerecivel);
 
-        rotuloPesoPerecivelInvalido = new JLabel("Digite um peso válido.");
+        rotuloPesoPerecivelInvalido = new JLabel("Enter a valid weight.");
         rotuloPesoPerecivelInvalido.setBounds(493, 177, 200, 20);
         rotuloPesoPerecivelInvalido.setForeground(Color.RED);
         rotuloPesoPerecivelInvalido.setVisible(false);
         painelCadastrarPerecivel.add(rotuloPesoPerecivelInvalido);
 
-        rotuloOrigemPerecivel = new JLabel("Código de sua origem");
+        rotuloOrigemPerecivel = new JLabel("Origin Location Identifier");
         rotuloOrigemPerecivel.setBounds(300, 205, 300, 20);
         painelCadastrarPerecivel.add(rotuloOrigemPerecivel);
 
@@ -771,7 +771,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloOrigemPerecivelInvalido.setVisible(false);
         painelCadastrarPerecivel.add(rotuloOrigemPerecivelInvalido);
 
-        rotuloDestinoPerecivel = new JLabel("Código de seu destino");
+        rotuloDestinoPerecivel = new JLabel("Destination Location Identifier");
         rotuloDestinoPerecivel.setBounds(300, 255, 300, 20);
         painelCadastrarPerecivel.add(rotuloDestinoPerecivel);
 
@@ -785,7 +785,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloDestinoPerecivelInvalido.setVisible(false);
         painelCadastrarPerecivel.add(rotuloDestinoPerecivelInvalido);
 
-        rotuloClientePerecivel = new JLabel("Cliente");
+        rotuloClientePerecivel = new JLabel("Customer");
         rotuloClientePerecivel.setBounds(300, 305, 300, 20);
         painelCadastrarPerecivel.add(rotuloClientePerecivel);
 
@@ -793,13 +793,13 @@ public class InterfaceGrafica extends JFrame {
         caixaOpcoesCliente.setBounds(300, 325, 300, 20);
         painelCadastrarPerecivel.add(caixaOpcoesCliente);
 
-        rotuloClientePerecivelInvalido = new JLabel("Selecione um cliente.");
+        rotuloClientePerecivelInvalido = new JLabel("Select a customer.");
         rotuloClientePerecivelInvalido.setBounds(600, 325, 193, 28);
         rotuloClientePerecivelInvalido.setForeground(Color.RED);
         rotuloClientePerecivelInvalido.setVisible(false);
         painelCadastrarPerecivel.add(rotuloClientePerecivelInvalido);
 
-        rotuloValidadePerecivel = new JLabel("Validade (dia/mês/ano)");
+        rotuloValidadePerecivel = new JLabel("Expiration Date (dd/MM/yyyy)");
         rotuloValidadePerecivel.setBounds(300, 355, 300, 20);
         painelCadastrarPerecivel.add(rotuloValidadePerecivel);
 
@@ -807,17 +807,17 @@ public class InterfaceGrafica extends JFrame {
         campoTextoValidadePerecivel.setBounds(300, 375, 193, 28);
         painelCadastrarPerecivel.add(campoTextoValidadePerecivel);
 
-        rotuloValidadePerecivelInvalido = new JLabel("Digite uma data válida.");
+        rotuloValidadePerecivelInvalido = new JLabel("Invalid date.");
         rotuloValidadePerecivelInvalido.setBounds(493, 375, 300, 20);
         rotuloValidadePerecivelInvalido.setForeground(Color.RED);
         rotuloValidadePerecivelInvalido.setVisible(false);
         painelCadastrarPerecivel.add(rotuloValidadePerecivelInvalido);
 
-        botaoSelecionarDronePerecivel = new JButton("Selecionar drone");
+        botaoSelecionarDronePerecivel = new JButton("Select Drone");
         botaoSelecionarDronePerecivel.setBounds(300, 405, 250, 25);
         painelCadastrarPerecivel.add(botaoSelecionarDronePerecivel);
 
-        rotuloDronePerecivelInvalido = new JLabel("Nenhum drone com capacidade para a entrega.");
+        rotuloDronePerecivelInvalido = new JLabel("No drone with capacity for the delivery.");
         rotuloDronePerecivelInvalido.setBounds(300, 435, 300, 20);
         rotuloDronePerecivelInvalido.setForeground(Color.RED);
         rotuloDronePerecivelInvalido.setVisible(false);
@@ -831,7 +831,7 @@ public class InterfaceGrafica extends JFrame {
         caixaOpcoesDrone.setBounds(300, 425, 300, 20);
         painelCadastrarPerecivel.add(caixaOpcoesDrone);
 
-        botaoCadastrarEntrega = new JButton("Cadastrar");
+        botaoCadastrarEntrega = new JButton("Register");
         botaoCadastrarEntrega.setBounds(300, 455, 250, 25);
         painelCadastrarPerecivel.add(botaoCadastrarEntrega);
 
@@ -859,14 +859,14 @@ public class InterfaceGrafica extends JFrame {
             try {
                 numero = Integer.parseInt(campoTextoNumeroPerecivel.getText());
                 if (numero < 0) {
-                    rotuloNumeroPerecivelInvalido.setText("Digite um número válido.");
+                    rotuloNumeroPerecivelInvalido.setText("Enter a valid number.");
                     rotuloNumeroPerecivelInvalido.setVisible(true);
                     validade = false;
                 } else {
                     rotuloNumeroPerecivelInvalido.setVisible(false);
                 }
             } catch (Exception exc) {
-                rotuloNumeroPerecivelInvalido.setText("Digite um número válido.");
+                rotuloNumeroPerecivelInvalido.setText("Enter a valid number.");
                 rotuloNumeroPerecivelInvalido.setVisible(true);
                 validade = false;
             }
@@ -886,29 +886,29 @@ public class InterfaceGrafica extends JFrame {
             }
             try {
                 origem = Integer.parseInt(campoTextoOrigemPerecivel.getText());
-                if (acmeDrones.localizacaoExistente(origem) == false) {
-                    rotuloOrigemPerecivelInvalido.setText("Localização com código não cadastrada.");
+                if (acmeDrones.locationExists(origem) == false) {
+                    rotuloOrigemPerecivelInvalido.setText("Location with identifier not registered.");
                     rotuloOrigemPerecivelInvalido.setVisible(true);
                     validade = false;
                 } else {
                     rotuloOrigemPerecivelInvalido.setVisible(false);
                 }
             } catch (Exception exc) {
-                rotuloOrigemPerecivelInvalido.setText("Digite um número válido.");
+                rotuloOrigemPerecivelInvalido.setText("Enter a valid number.");
                 rotuloOrigemPerecivelInvalido.setVisible(true);
                 validade = false;
             }
             try {
                 destino = Integer.parseInt(campoTextoDestinoPerecivel.getText());
-                if (acmeDrones.localizacaoExistente(destino) == false) {
-                    rotuloDestinoPerecivelInvalido.setText("Localização com código não cadastrada.");
+                if (acmeDrones.locationExists(destino) == false) {
+                    rotuloDestinoPerecivelInvalido.setText("Location with identifier not registered.");
                     rotuloDestinoPerecivelInvalido.setVisible(true);
                     validade = false;
                 } else {
                     rotuloDestinoPerecivelInvalido.setVisible(false);
                 }
             } catch (Exception exc) {
-                rotuloDestinoPerecivelInvalido.setText("Digite um número válido.");
+                rotuloDestinoPerecivelInvalido.setText("Enter a valid number.");
                 rotuloDestinoPerecivelInvalido.setVisible(true);
                 validade = false;
             }
@@ -916,7 +916,7 @@ public class InterfaceGrafica extends JFrame {
                 rotuloClientePerecivelInvalido.setVisible(true);
                 validade = false;
             } else {
-                cliente = acmeDrones.buscarCliente((String) caixaOpcoesCliente.getSelectedItem());
+                cliente = acmeDrones.findCustomer((String) caixaOpcoesCliente.getSelectedItem());
                 rotuloClientePerecivelInvalido.setVisible(false);
             }
             try {
@@ -927,21 +927,21 @@ public class InterfaceGrafica extends JFrame {
                 validade = false;
             }
             if (validade == true) {
-                if (acmeDrones.entregaExistente(numero)) {
-                    rotuloNumeroPerecivelInvalido.setText("Número já cadastrado.");
+                if (acmeDrones.deliveryExists(numero)) {
+                    rotuloNumeroPerecivelInvalido.setText("Identifier already registered.");
                     rotuloNumeroPerecivelInvalido.setVisible(true);
                 } else {
-                    entregaPerecivel = new EntregaPerecivel(numero, descricao, data, peso, acmeDrones.buscarLocalizacao(origem), acmeDrones.buscarLocalizacao(destino), cliente, dataValidade);
-                    if (acmeDrones.dronesCapacitados(entregaPerecivel).isEmpty()) {
+                    entregaPerecivel = new PerishableDelivery(numero, descricao, data, peso, acmeDrones.findLocation(origem), acmeDrones.findLocation(destino), cliente, dataValidade);
+                    if (acmeDrones.qualifiedDrones(entregaPerecivel).isEmpty()) {
                         rotuloDronePerecivelInvalido.setVisible(true);
                     } else {
                         botaoSelecionarDronePerecivel.setVisible(false);
                         rotuloDronePerecivel.setVisible(true);
                         caixaOpcoesDrone.setVisible(true);
                         botaoCadastrarEntrega.setVisible(true);
-                        String[] identificadorDrones = new String[acmeDrones.dronesCapacitados(entregaPerecivel).size()];
+                        String[] identificadorDrones = new String[acmeDrones.qualifiedDrones(entregaPerecivel).size()];
                         for (int i = 0; i < identificadorDrones.length; i++) {
-                            identificadorDrones[i] = Integer.toString(acmeDrones.dronesCapacitados(entregaPerecivel).get(i).getIdentificador());
+                            identificadorDrones[i] = Integer.toString(acmeDrones.qualifiedDrones(entregaPerecivel).get(i).getIdentifier());
                         }
                         painelCadastrarPerecivel.remove(caixaOpcoesDrone);
                         caixaOpcoesDrone = new JComboBox<String>(identificadorDrones);
@@ -953,10 +953,10 @@ public class InterfaceGrafica extends JFrame {
         });
 
         botaoCadastrarEntrega.addActionListener(e -> {
-            drone = acmeDrones.buscarDrone(Integer.parseInt((String) caixaOpcoesDrone.getSelectedItem()));
+            drone = acmeDrones.findDrone(Integer.parseInt((String) caixaOpcoesDrone.getSelectedItem()));
             entregaPerecivel.setDrone(drone);
-            acmeDrones.cadastrarEntregaPerecivel(entregaPerecivel);
-            drone.adicionarEntrega(entregaPerecivel);
+            acmeDrones.registerPerishableDelivery(entregaPerecivel);
+            drone.addDelivery(entregaPerecivel);
             rotuloNumeroPerecivel.setVisible(false);
             campoTextoNumeroPerecivel.setVisible(false);
             rotuloDescricaoPerecivel.setVisible(false);
@@ -974,7 +974,7 @@ public class InterfaceGrafica extends JFrame {
             rotuloDronePerecivel.setVisible(false);
             caixaOpcoesDrone.setVisible(false);
             botaoCadastrarEntrega.setVisible(false);
-            areaTextoCadastrarEntregaDados.setText("Entrega cadastrada com sucesso. Dados:\n\n" + entregaPerecivel);
+            areaTextoCadastrarEntregaDados.setText("Delivery registered successfully. Data:\n\n" + entregaPerecivel);
             cadastrarEntregaDados.setVisible(true);
         });
 
@@ -983,11 +983,11 @@ public class InterfaceGrafica extends JFrame {
         painelCadastrarNaoPerecivel = new JPanel();
         painelCadastrarNaoPerecivel.setLayout(null);
 
-        botaoVoltarCadastrarNaoPerecivel = new JButton("Voltar");
+        botaoVoltarCadastrarNaoPerecivel = new JButton("Back");
         botaoVoltarCadastrarNaoPerecivel.setBounds(40, 20, 90, 25);
         painelCadastrarNaoPerecivel.add(botaoVoltarCadastrarNaoPerecivel);
 
-        rotuloNumeroNaoPerecivel = new JLabel("Número");
+        rotuloNumeroNaoPerecivel = new JLabel("Identifier");
         rotuloNumeroNaoPerecivel.setBounds(300, 58, 300, 20);
         painelCadastrarNaoPerecivel.add(rotuloNumeroNaoPerecivel);
 
@@ -1001,7 +1001,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloNumeroNaoPerecivelInvalido.setVisible(false);
         painelCadastrarNaoPerecivel.add(rotuloNumeroNaoPerecivelInvalido);
 
-        rotuloDescricaoNaoPerecivel = new JLabel("Descrição");
+        rotuloDescricaoNaoPerecivel = new JLabel("Description");
         rotuloDescricaoNaoPerecivel.setBounds(300, 108, 300, 20);
         painelCadastrarNaoPerecivel.add(rotuloDescricaoNaoPerecivel);
 
@@ -1009,7 +1009,7 @@ public class InterfaceGrafica extends JFrame {
         campoTextoDescricaoNaoPerecivel.setBounds(300, 128, 193, 28);
         painelCadastrarNaoPerecivel.add(campoTextoDescricaoNaoPerecivel);
 
-        rotuloPesoNaoPerecivel = new JLabel("Peso");
+        rotuloPesoNaoPerecivel = new JLabel("Weight");
         rotuloPesoNaoPerecivel.setBounds(300, 158, 300, 20);
         painelCadastrarNaoPerecivel.add(rotuloPesoNaoPerecivel);
 
@@ -1017,13 +1017,13 @@ public class InterfaceGrafica extends JFrame {
         campoTextoPesoNaoPerecivel.setBounds(300, 177, 193, 28);
         painelCadastrarNaoPerecivel.add(campoTextoPesoNaoPerecivel);
 
-        rotuloPesoNaoPerecivelInvalido = new JLabel("Digite um peso válido.");
+        rotuloPesoNaoPerecivelInvalido = new JLabel("Enter a valid weight.");
         rotuloPesoNaoPerecivelInvalido.setBounds(493, 177, 200, 20);
         rotuloPesoNaoPerecivelInvalido.setForeground(Color.RED);
         rotuloPesoNaoPerecivelInvalido.setVisible(false);
         painelCadastrarNaoPerecivel.add(rotuloPesoNaoPerecivelInvalido);
 
-        rotuloOrigemNaoPerecivel = new JLabel("Código de sua origem");
+        rotuloOrigemNaoPerecivel = new JLabel("Origin Location Identifier");
         rotuloOrigemNaoPerecivel.setBounds(300, 205, 300, 20);
         painelCadastrarNaoPerecivel.add(rotuloOrigemNaoPerecivel);
 
@@ -1037,7 +1037,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloOrigemNaoPerecivelInvalido.setVisible(false);
         painelCadastrarNaoPerecivel.add(rotuloOrigemNaoPerecivelInvalido);
 
-        rotuloDestinoNaoPerecivel = new JLabel("Código de seu destino");
+        rotuloDestinoNaoPerecivel = new JLabel("Destination Location Identifier");
         rotuloDestinoNaoPerecivel.setBounds(300, 255, 300, 20);
         painelCadastrarNaoPerecivel.add(rotuloDestinoNaoPerecivel);
 
@@ -1051,7 +1051,7 @@ public class InterfaceGrafica extends JFrame {
         rotuloDestinoNaoPerecivelInvalido.setVisible(false);
         painelCadastrarNaoPerecivel.add(rotuloDestinoNaoPerecivelInvalido);
 
-        rotuloClienteNaoPerecivel = new JLabel("Cliente");
+        rotuloClienteNaoPerecivel = new JLabel("Customer");
         rotuloClienteNaoPerecivel.setBounds(300, 305, 300, 20);
         painelCadastrarNaoPerecivel.add(rotuloClienteNaoPerecivel);
 
@@ -1059,13 +1059,13 @@ public class InterfaceGrafica extends JFrame {
         caixaOpcoesClienteNaoPerecivel.setBounds(300, 325, 300, 20);
         painelCadastrarNaoPerecivel.add(caixaOpcoesClienteNaoPerecivel);
 
-        rotuloClienteNaoPerecivelInvalido = new JLabel("Selecione um cliente.");
+        rotuloClienteNaoPerecivelInvalido = new JLabel("Select a customer.");
         rotuloClienteNaoPerecivelInvalido.setBounds(600, 325, 193, 28);
         rotuloClienteNaoPerecivelInvalido.setForeground(Color.RED);
         rotuloClienteNaoPerecivelInvalido.setVisible(false);
         painelCadastrarNaoPerecivel.add(rotuloClienteNaoPerecivelInvalido);
 
-        rotuloDescricaoMateriais = new JLabel("Descrição dos materiais");
+        rotuloDescricaoMateriais = new JLabel("Material Description");
         rotuloDescricaoMateriais.setBounds(300, 355, 300, 20);
         painelCadastrarNaoPerecivel.add(rotuloDescricaoMateriais);
 
@@ -1073,17 +1073,17 @@ public class InterfaceGrafica extends JFrame {
         campoTextoDescricaoMateriais.setBounds(300, 375, 193, 28);
         painelCadastrarNaoPerecivel.add(campoTextoDescricaoMateriais);
 
-        rotuloDescricaoMateriaisInvalido = new JLabel("Digite uma descrição.");
+        rotuloDescricaoMateriaisInvalido = new JLabel("Enter a valid description.");
         rotuloDescricaoMateriaisInvalido.setBounds(493, 375, 300, 20);
         rotuloDescricaoMateriaisInvalido.setForeground(Color.RED);
         rotuloDescricaoMateriaisInvalido.setVisible(false);
         painelCadastrarNaoPerecivel.add(rotuloDescricaoMateriaisInvalido);
 
-        botaoSelecionarDroneNaoPerecivel = new JButton("Selecionar drone");
+        botaoSelecionarDroneNaoPerecivel = new JButton("Select Drone");
         botaoSelecionarDroneNaoPerecivel.setBounds(300, 405, 250, 25);
         painelCadastrarNaoPerecivel.add(botaoSelecionarDroneNaoPerecivel);
 
-        rotuloDroneNaoPerecivelInvalido = new JLabel("Nenhum drone com capacidade para a entrega.");
+        rotuloDroneNaoPerecivelInvalido = new JLabel("No drone with capacity for the delivery.");
         rotuloDroneNaoPerecivelInvalido.setBounds(300, 435, 300, 20);
         rotuloDroneNaoPerecivelInvalido.setForeground(Color.RED);
         rotuloDroneNaoPerecivelInvalido.setVisible(false);
@@ -1097,7 +1097,7 @@ public class InterfaceGrafica extends JFrame {
         caixaOpcoesDroneNaoPerecivel.setBounds(300, 425, 300, 20);
         painelCadastrarNaoPerecivel.add(caixaOpcoesDroneNaoPerecivel);
 
-        botaoCadastrarEntregaNaoPerecivel = new JButton("Cadastrar");
+        botaoCadastrarEntregaNaoPerecivel = new JButton("Register");
         botaoCadastrarEntregaNaoPerecivel.setBounds(300, 455, 250, 25);
         painelCadastrarNaoPerecivel.add(botaoCadastrarEntregaNaoPerecivel);
 
@@ -1124,14 +1124,14 @@ public class InterfaceGrafica extends JFrame {
             try {
                 numero = Integer.parseInt(campoTextoNumeroNaoPerecivel.getText());
                 if (numero < 0) {
-                    rotuloNumeroNaoPerecivelInvalido.setText("Digite um número válido.");
+                    rotuloNumeroNaoPerecivelInvalido.setText("Enter a valid number.");
                     rotuloNumeroNaoPerecivelInvalido.setVisible(true);
                     validade = false;
                 } else {
                     rotuloNumeroNaoPerecivelInvalido.setVisible(false);
                 }
             } catch (Exception exc) {
-                rotuloNumeroNaoPerecivelInvalido.setText("Digite um número válido.");
+                rotuloNumeroNaoPerecivelInvalido.setText("Enter a valid number.");
                 rotuloNumeroNaoPerecivelInvalido.setVisible(true);
                 validade = false;
             }
@@ -1151,29 +1151,29 @@ public class InterfaceGrafica extends JFrame {
             }
             try {
                 origem = Integer.parseInt(campoTextoOrigemNaoPerecivel.getText());
-                if (acmeDrones.localizacaoExistente(origem) == false) {
-                    rotuloOrigemNaoPerecivelInvalido.setText("Localização com código não cadastrada.");
+                if (acmeDrones.locationExists(origem) == false) {
+                    rotuloOrigemNaoPerecivelInvalido.setText("Location with identifier not registered.");
                     rotuloOrigemNaoPerecivelInvalido.setVisible(true);
                     validade = false;
                 } else {
                     rotuloOrigemNaoPerecivelInvalido.setVisible(false);
                 }
             } catch (Exception exc) {
-                rotuloOrigemNaoPerecivelInvalido.setText("Digite um número válido.");
+                rotuloOrigemNaoPerecivelInvalido.setText("Enter a valid number.");
                 rotuloOrigemNaoPerecivelInvalido.setVisible(true);
                 validade = false;
             }
             try {
                 destino = Integer.parseInt(campoTextoDestinoNaoPerecivel.getText());
-                if (acmeDrones.localizacaoExistente(destino) == false) {
-                    rotuloDestinoNaoPerecivelInvalido.setText("Localização com código não cadastrada.");
+                if (acmeDrones.locationExists(destino) == false) {
+                    rotuloDestinoNaoPerecivelInvalido.setText("Location with identifier not registered.");
                     rotuloDestinoNaoPerecivelInvalido.setVisible(true);
                     validade = false;
                 } else {
                     rotuloDestinoNaoPerecivelInvalido.setVisible(false);
                 }
             } catch (Exception exc) {
-                rotuloDestinoNaoPerecivelInvalido.setText("Digite um número válido.");
+                rotuloDestinoNaoPerecivelInvalido.setText("Enter a valid number.");
                 rotuloDestinoNaoPerecivelInvalido.setVisible(true);
                 validade = false;
             }
@@ -1181,7 +1181,7 @@ public class InterfaceGrafica extends JFrame {
                 rotuloClienteNaoPerecivelInvalido.setVisible(true);
                 validade = false;
             } else {
-                cliente = acmeDrones.buscarCliente((String) caixaOpcoesClienteNaoPerecivel.getSelectedItem());
+                cliente = acmeDrones.findCustomer((String) caixaOpcoesClienteNaoPerecivel.getSelectedItem());
                 rotuloClienteNaoPerecivelInvalido.setVisible(false);
             }
             descricaoMateriais = campoTextoDescricaoMateriais.getText();
@@ -1192,21 +1192,21 @@ public class InterfaceGrafica extends JFrame {
                 rotuloDescricaoMateriaisInvalido.setVisible(false);
             }
             if (validade == true) {
-                if (acmeDrones.entregaExistente(numero)) {
-                    rotuloNumeroNaoPerecivelInvalido.setText("Número já cadastrado.");
+                if (acmeDrones.deliveryExists(numero)) {
+                    rotuloNumeroNaoPerecivelInvalido.setText("Identifier already registered.");
                     rotuloNumeroNaoPerecivelInvalido.setVisible(true);
                 } else {
-                    entregaNaoPerecivel = new EntregaNaoPerecivel(numero, descricao, data, peso, acmeDrones.buscarLocalizacao(origem), acmeDrones.buscarLocalizacao(destino), cliente, descricaoMateriais);
-                    if (acmeDrones.dronesCapacitados(entregaNaoPerecivel).isEmpty()) {
+                    entregaNaoPerecivel = new NonPerishableDelivery(numero, descricao, data, peso, acmeDrones.findLocation(origem), acmeDrones.findLocation(destino), cliente, descricaoMateriais);
+                    if (acmeDrones.qualifiedDrones(entregaNaoPerecivel).isEmpty()) {
                         rotuloDroneNaoPerecivelInvalido.setVisible(true);
                     } else {
                         botaoSelecionarDroneNaoPerecivel.setVisible(false);
                         rotuloDroneNaoPerecivel.setVisible(true);
                         caixaOpcoesDroneNaoPerecivel.setVisible(true);
                         botaoCadastrarEntregaNaoPerecivel.setVisible(true);
-                        String[] identificadorDrones = new String[acmeDrones.dronesCapacitados(entregaNaoPerecivel).size()];
+                        String[] identificadorDrones = new String[acmeDrones.qualifiedDrones(entregaNaoPerecivel).size()];
                         for (int i = 0; i < identificadorDrones.length; i++) {
-                            identificadorDrones[i] = Integer.toString(acmeDrones.dronesCapacitados(entregaNaoPerecivel).get(i).getIdentificador());
+                            identificadorDrones[i] = Integer.toString(acmeDrones.qualifiedDrones(entregaNaoPerecivel).get(i).getIdentifier());
                         }
                         painelCadastrarNaoPerecivel.remove(caixaOpcoesDroneNaoPerecivel);
                         caixaOpcoesDroneNaoPerecivel = new JComboBox<String>(identificadorDrones);
@@ -1218,10 +1218,10 @@ public class InterfaceGrafica extends JFrame {
         });
 
         botaoCadastrarEntregaNaoPerecivel.addActionListener(e -> {
-            drone = acmeDrones.buscarDrone(Integer.parseInt((String) caixaOpcoesDroneNaoPerecivel.getSelectedItem()));
+            drone = acmeDrones.findDrone(Integer.parseInt((String) caixaOpcoesDroneNaoPerecivel.getSelectedItem()));
             entregaNaoPerecivel.setDrone(drone);
-            acmeDrones.cadastrarEntregaNaoPerecivel(entregaNaoPerecivel);
-            drone.adicionarEntrega(entregaNaoPerecivel);
+            acmeDrones.registerNonPerishableDelivery(entregaNaoPerecivel);
+            drone.addDelivery(entregaNaoPerecivel);
             rotuloNumeroNaoPerecivel.setVisible(false);
             campoTextoNumeroNaoPerecivel.setVisible(false);
             rotuloDescricaoNaoPerecivel.setVisible(false);
@@ -1239,7 +1239,7 @@ public class InterfaceGrafica extends JFrame {
             rotuloDroneNaoPerecivel.setVisible(false);
             caixaOpcoesDroneNaoPerecivel.setVisible(false);
             botaoCadastrarEntregaNaoPerecivel.setVisible(false);
-            areaTextoCadastrarEntregaNaoPerecivelDados.setText("Entrega cadastrada com sucesso. Dados:\n\n" + entregaNaoPerecivel);
+            areaTextoCadastrarEntregaNaoPerecivelDados.setText("Delivery successfully registered. Data:\n\n" + entregaNaoPerecivel);
             cadastrarEntregaNaoPerecivelDados.setVisible(true);
         });
 
@@ -1248,11 +1248,11 @@ public class InterfaceGrafica extends JFrame {
         painelConsultarTodasEntregas = new JPanel();
         painelConsultarTodasEntregas.setLayout(null);
 
-        botaoVoltarConsultarTodasEntregas = new JButton("Voltar");
+        botaoVoltarConsultarTodasEntregas = new JButton("Back");
         botaoVoltarConsultarTodasEntregas.setBounds(40, 20, 90, 25);
         painelConsultarTodasEntregas.add(botaoVoltarConsultarTodasEntregas);
 
-        rotuloTituloTodasEntregas = new JLabel("Todas as entregas realizadas");
+        rotuloTituloTodasEntregas = new JLabel("All deliveries");
         rotuloTituloTodasEntregas.setBounds(50, 60, 200, 20);
         painelConsultarTodasEntregas.add(rotuloTituloTodasEntregas);
 
@@ -1273,15 +1273,15 @@ public class InterfaceGrafica extends JFrame {
         painelSimularCarga = new JPanel();
         painelSimularCarga.setLayout(null);
 
-        botaoVoltarSimularCarga = new JButton("Voltar");
+        botaoVoltarSimularCarga = new JButton("Back");
         botaoVoltarSimularCarga.setBounds(40, 20, 90, 25);
         painelSimularCarga.add(botaoVoltarSimularCarga);
 
-        botaoConfirmarDados = new JButton("Enviar");
+        botaoConfirmarDados = new JButton("Load");
         botaoConfirmarDados.setBounds(300, 217, 90, 25);
         painelSimularCarga.add(botaoConfirmarDados);
 
-        rotuloInformacoesArquivo = new JLabel("Informe o nome do arquivo:");
+        rotuloInformacoesArquivo = new JLabel("Enter file name:");
         rotuloInformacoesArquivo.setBounds(300, 156, 250, 20);
         painelSimularCarga.add(rotuloInformacoesArquivo);
 
@@ -1289,7 +1289,7 @@ public class InterfaceGrafica extends JFrame {
         campoTextoArquivoLocalizacoes.setBounds(300, 177, 193, 28);
         painelSimularCarga.add(campoTextoArquivoLocalizacoes);
 
-        rotuloLocalizacaoCadastroInvalido = new JLabel("Digite um arquivo válido.");
+        rotuloLocalizacaoCadastroInvalido = new JLabel("Enter a valid file name.");
         rotuloLocalizacaoCadastroInvalido.setBounds(493, 177, 250, 20);
         rotuloLocalizacaoCadastroInvalido.setForeground(Color.BLACK);
         rotuloLocalizacaoCadastroInvalido.setVisible(false);
@@ -1307,12 +1307,12 @@ public class InterfaceGrafica extends JFrame {
 
         botaoConfirmarDados.addActionListener(e -> {
             nomeArquivoLocalizacao = campoTextoArquivoLocalizacoes.getText();
-            boolean teste = acmeDrones.simularCargaDeDados(nomeArquivoLocalizacao);
+            boolean teste = acmeDrones.simulateDataLoad(nomeArquivoLocalizacao);
             if (teste == true) {
-                rotuloLocalizacaoCadastroInvalido.setText("Arquivo importado com sucesso.");
+                rotuloLocalizacaoCadastroInvalido.setText("File loaded successfully.");
                 rotuloLocalizacaoCadastroInvalido.setVisible(true);
             } else {
-                rotuloLocalizacaoCadastroInvalido.setText("Ocorreu um erro.");
+                rotuloLocalizacaoCadastroInvalido.setText("An error occured.");
                 rotuloLocalizacaoCadastroInvalido.setVisible(true);
             }
         });
@@ -1322,22 +1322,22 @@ public class InterfaceGrafica extends JFrame {
         painelCliente = new JPanel();
         painelCliente.setLayout(new BoxLayout(painelCliente, BoxLayout.PAGE_AXIS));
 
-        botaoConsultarEntregas = new JButton("Consultar entregas");
+        botaoConsultarEntregas = new JButton("View deliveries");
         botaoConsultarEntregas.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelCliente.add(botaoConsultarEntregas);
 
-        botaoConsultarCobranca = new JButton("Consultar cobrança mensal");
+        botaoConsultarCobranca = new JButton("View monthly charge");
         botaoConsultarCobranca.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelCliente.add(botaoConsultarCobranca);
 
-        botaoSairCliente = new JButton("Sair");
+        botaoSairCliente = new JButton("Logout");
         botaoSairCliente.setAlignmentX(Component.CENTER_ALIGNMENT);
         painelCliente.add(botaoSairCliente);
 
         painelPrincipal.add(painelCliente, "painelCliente");
 
         botaoConsultarEntregas.addActionListener(e -> {
-            areaTextoEntregas.setText(acmeDrones.consultarEntregas());
+            areaTextoEntregas.setText(acmeDrones.viewDeliveries());
             cardLayout.show(painelPrincipal, "painelConsultarEntregas");
         });
 
@@ -1357,11 +1357,11 @@ public class InterfaceGrafica extends JFrame {
         painelConsultarEntregas = new JPanel();
         painelConsultarEntregas.setLayout(null);
 
-        botaoVoltarConsultarEntregas = new JButton("Voltar");
+        botaoVoltarConsultarEntregas = new JButton("Back");
         botaoVoltarConsultarEntregas.setBounds(40, 20, 90, 25);
         painelConsultarEntregas.add(botaoVoltarConsultarEntregas);
 
-        rotuloTituloEntregas = new JLabel("Entregas");
+        rotuloTituloEntregas = new JLabel("Deliveries made");
         rotuloTituloEntregas.setBounds(50, 60, 70, 20);
         painelConsultarEntregas.add(rotuloTituloEntregas);
 
@@ -1382,11 +1382,11 @@ public class InterfaceGrafica extends JFrame {
         painelConsultarCobrancaForm = new JPanel();
         painelConsultarCobrancaForm.setLayout(null);
 
-        botaoVoltarConsultarCobrancaForm = new JButton("Voltar");
+        botaoVoltarConsultarCobrancaForm = new JButton("Back");
         botaoVoltarConsultarCobrancaForm.setBounds(40, 20, 90, 25);
         painelConsultarCobrancaForm.add(botaoVoltarConsultarCobrancaForm);
 
-        rotuloAno = new JLabel("Ano");
+        rotuloAno = new JLabel("Year");
         rotuloAno.setBounds(300, 158, 70, 20);
         painelConsultarCobrancaForm.add(rotuloAno);
 
@@ -1394,13 +1394,13 @@ public class InterfaceGrafica extends JFrame {
         campoTextoAno.setBounds(300, 177, 193, 28);
         painelConsultarCobrancaForm.add(campoTextoAno);
 
-        rotuloAnoInvalido = new JLabel("Digite um ano válido.");
+        rotuloAnoInvalido = new JLabel("Enter a valid year.");
         rotuloAnoInvalido.setBounds(493, 177, 200, 20);
         rotuloAnoInvalido.setForeground(Color.RED);
         rotuloAnoInvalido.setVisible(false);
         painelConsultarCobrancaForm.add(rotuloAnoInvalido);
 
-        rotuloMes = new JLabel("Mês");
+        rotuloMes = new JLabel("Month");
         rotuloMes.setBounds(300, 205, 70, 20);
         painelConsultarCobrancaForm.add(rotuloMes);
 
@@ -1408,13 +1408,13 @@ public class InterfaceGrafica extends JFrame {
         campoTextoMes.setBounds(300, 225, 193, 28);
         painelConsultarCobrancaForm.add(campoTextoMes);
 
-        rotuloMesInvalido = new JLabel("Digite um mes válido (valor numérico).");
+        rotuloMesInvalido = new JLabel("Enter a valid month (integer).");
         rotuloMesInvalido.setBounds(493, 225, 400, 20);
         rotuloMesInvalido.setForeground(Color.RED);
         rotuloMesInvalido.setVisible(false);
         painelConsultarCobrancaForm.add(rotuloMesInvalido);
 
-        botaoBuscarCobranca = new JButton("Buscar");
+        botaoBuscarCobranca = new JButton("Search");
         botaoBuscarCobranca.setBounds(300, 260, 90, 25);
         painelConsultarCobrancaForm.add(botaoBuscarCobranca);
 
@@ -1451,7 +1451,7 @@ public class InterfaceGrafica extends JFrame {
                 validade = false;
             }
             if (validade == true) {
-                areaTextoCobrancaMensal.setText(acmeDrones.consultarCobrancaMensal(ano, mes));
+                areaTextoCobrancaMensal.setText(acmeDrones.viewMonthlyCharge(ano, mes));
                 cardLayout.show(painelPrincipal, "painelConsultarCobranca");
             }
         });
@@ -1461,11 +1461,11 @@ public class InterfaceGrafica extends JFrame {
         painelConsultarCobranca = new JPanel();
         painelConsultarCobranca.setLayout(null);
 
-        botaoVoltarFormConsultarCobranca = new JButton("Voltar");
+        botaoVoltarFormConsultarCobranca = new JButton("Back");
         botaoVoltarFormConsultarCobranca.setBounds(40, 20, 90, 25);
         painelConsultarCobranca.add(botaoVoltarFormConsultarCobranca);
 
-        rotuloTituloEntregasCobrancaMensal = new JLabel("Entregas realizadas no período e cobrança mensal");
+        rotuloTituloEntregasCobrancaMensal = new JLabel("Deliveries made and monthly charge");
         rotuloTituloEntregasCobrancaMensal.setBounds(50, 60, 400, 20);
         painelConsultarCobranca.add(rotuloTituloEntregasCobrancaMensal);
 

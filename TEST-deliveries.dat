@@ -1,0 +1,5 @@
+tipo;numero;descricao;data;peso;emailCliente;codigoLocalizacaoOrigem;codigoLocalizacaoDestino;validadeOuMaterial
+2;22;Notebook;2/7/2022;2.5;mariasouza@mail.com;2;1;Plastico, vidro e metal
+2;33;Armario;4/7/2022;109.9;pedrosilva@email.com;5;3;Madeira
+1;11;Sanduiche;1/7/2022;0.050;pedrosilva@email.com;4;5;3/7/2022
+2;44;Celular;7/7/2022;0.1;mariasouza@mail.com;2;5;Plastico, vidro e metal
